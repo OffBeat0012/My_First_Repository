@@ -1,0 +1,85 @@
+import csv
+import datetime
+FILE_NAME = "workout_log.csv"
+# Function to add a new workout entry
+def log_workout():
+    date = datetime.date.today().strftime("%Y-%m-%d")
+    exercise = input("Enter exercise name: ")
+    sets = int(input("Enter number of sets: "))
+    reps = int(input("Enter number of reps per set: "))
+    weight = float(input("Enter weight used (kg): "))
+    with open(FILE_NAME, mode="a", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow([date, exercise, sets, reps, weight])
+    print("Workout logged successfully!")
+# Function to view all logged workouts
+def view_workouts():
+    try:
+        with open(FILE_NAME, mode="r") as file:
+            reader = csv.reader(file)
+            print("\nWorkout History:")
+            for row in reader:
+                print(row)
+    except FileNotFoundError:
+        print("No workout data found.")
+# Function to delete a workout entry
+def delete_workout():
+    try:
+        with open(FILE_NAME, mode="r") as file:
+            reader = list(csv.reader(file))
+        if not reader:
+            print("No workout data found.")
+            return
+        view_workouts()
+        index = int(input("\nEnter the workout number to delete: ")) - 1
+        if 0 <= index < len(reader):
+            del reader[index]
+            with open(FILE_NAME, mode="w", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerows(reader)
+            print("Workout deleted successfully.")
+        else:
+            print("Invalid workout number.")
+    except (FileNotFoundError, ValueError):
+        print("Error: Please enter a valid number.")
+# Function to check progress for a specific exercise
+def analyze_progress():
+    exercise_name = input("Enter exercise name to check progress: ")
+    max_weight = 0   
+    try:
+        with open(FILE_NAME, mode="r") as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row and row[1].lower() == exercise_name.lower():
+                    max_weight = max(max_weight, float(row[4]))        
+        if max_weight > 0:
+            print(f"Your max weight for {exercise_name}: {max_weight} kg")
+        else:
+            print(f"No records found for {exercise_name}.")
+    except FileNotFoundError:
+        print("No workout data found.")
+# Creating Main program loop
+def main():
+    while True:
+        print("\nWorkout Tracker")
+        print("1. Log a workout")
+        print("2. View workout history")
+        print("3. Analyze progress")
+        print("4. Delete A Workout")    
+        print("5. Exit") 
+        choice = input("Enter your choice: ")
+        if choice == "1":
+            log_workout()
+        elif choice == "2":
+            view_workouts()
+        elif choice == "4":
+            delete_workout()
+        elif choice == "3":
+            analyze_progress() 
+        elif choice == "5":
+            print("Exiting program. Keep working out!")
+            break
+        else:
+            print("Invalid choice, please try again.")
+if __name__ == "__main__":
+    main()
