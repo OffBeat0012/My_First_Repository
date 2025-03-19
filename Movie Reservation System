@@ -1,0 +1,52 @@
+class MovieTicketSystem:
+    def __init__(self):
+      # Movies with showtimes and available seats
+        self.movies = {
+            "1": {"title": "𝔸𝕧𝕖𝕟𝕘𝕖𝕣𝕤: 𝔼𝕟𝕕𝕘𝕒𝕞𝕖", "time": "6:00 PM", "seats": ["A1", "A2", "A3", "A4", "A5"]},
+            "2": {"title": "𝕀𝕟𝕔𝕖𝕡𝕥𝕚𝕠𝕟", "time": "8:00 PM", "seats": ["B1", "B2", "B3", "B4", "B5"]},
+            "3": {"title": "𝕋𝕙𝕖 𝔻𝕒𝕣𝕜 𝕂𝕟𝕚𝕘𝕙𝕥", "time": "10:00 PM", "seats": ["C1", "C2", "C3", "C4", "C5"]}
+        }, 
+            "4": {"title": "𝕄𝕚𝕣𝕒𝕔𝕦𝕝𝕠𝕦𝕤 𝕃𝕒𝕕𝕪𝕓𝕦𝕘 : 𝕋𝕙𝕖 𝕄𝕠𝕧𝕚𝕖", "time": "10:00 PM", "seats": ["D1", "D2", "D3", "D4", "D5"]}
+        
+        self.reservations = []
+    def show_movies(self):
+        print("\nAvailable Movies:")
+        for key, movie in self.movies.items():
+            print(f"{key}. {movie['title']} - {movie['time']}")
+    def select_movie(self):
+        self.show_movies()
+        movie_choice = input("\nEnter the number of the movie you want to watch: ")
+        if movie_choice in self.movies:
+            return movie_choice
+        else:
+            print("Invalid choice. Please try again.")
+            return self.select_movie()
+    def choose_seat(self, movie_choice):
+        movie = self.movies[movie_choice]
+        print("\nAvailable seats:", movie['seats'])
+        seat_choice = input("\nEnter the seat number you want to reserve: ")
+        if seat_choice in movie['seats']:
+            movie['seats'].remove(seat_choice)
+            return seat_choice
+        else:
+            print("Seat unavailable. Please choose another seat.")
+            return self.choose_seat(movie_choice)
+    def confirm_reservation(self, movie_choice, seat_choice):
+        movie = self.movies[movie_choice]
+        name = input("\nEnter your name for the reservation: ")
+        self.reservations.append({"name": name, "movie": movie["title"], "time": movie["time"], "seat": seat_choice})
+        print(f"\nReservation confirmed for {name}: {movie['title']} at {movie['time']} (Seat: {seat_choice})")
+    def start_booking(self):
+        while True:
+            print("\n--- Movie Ticket Booking System ---")
+            movie_choice = self.select_movie()
+            seat_choice = self.choose_seat(movie_choice)
+            self.confirm_reservation(movie_choice, seat_choice)
+            another = input("\nDo you want to book another ticket? (yes/no): ").strip().lower()
+            if another != "yes":
+                print("\nThank you for using the Movie Ticket Booking System!")
+                break
+# Run the system
+if __name__ == "__main__":
+    system = MovieTicketSystem()
+    system.start_booking()
